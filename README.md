@@ -1,2 +1,2 @@
 # Code-Quiz
-A timed quick on some coding tidbits
+A timed quiz on some coding tidbits
