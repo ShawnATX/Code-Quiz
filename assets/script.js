@@ -44,78 +44,76 @@ const quizQuestions = [
                             "Booleans",
                             "Arrays",
                             "Alerts"],
-                        3], 
+                        4], 
                         ["Question 2", 
                         "JSON is an acronym which stands for...", 
                             ["Jimmy Should Obviously Not",
                             "Jamiroquai Shall Obtain Nobility",
                             "Javascript Object Notation",
                             "John-Jacob-Jingleheimer Schmidt Only Name"],
-                        2], 
+                        3], 
                         ["Question 3", 
                         "The core languages of the web are...", 
                             ["HTML, CSS, JS",
                             "PHP, Ruby, XML",
                             "English, Spanish, Russian",
                            "Tubes, Memes, Trolling"],
-                        0], 
+                        1], 
                         ["Question 4", 
                         "A function which calls itself is said to be...", 
                             ["Narcissistic",
                             "Lonely",
                             "A Soliloquy",
                             "Recursive"],
-                        3], 
+                        4], 
                         ["Question 5", 
                         "A language-agnostic disambiguation of a program or function is known as...", 
                             ["Jibber Jabber",
                             "Pseudo-code",
                             "Mumbo Jumbo",
                             "A Jewel Poem"],
-                        1], 
+                        2], 
                         ["Question 6", 
                         "A rubber ducky is used for...", 
                             ["Laughing together",
                             "Crying together",
                             "Throwing",
                             "All of the above"],
-                        3], 
+                        4], 
                         ["Question 7", 
                         "Version Control systems ARE NOT used for", 
                             ["Managing collaborative work with multiple team members",
                             "Ensuring you have the correct version of your browser",
                             "Tracking changes iteratively as a program is build",
                             "Housing a decentralized repository of a program"],
-                        1], 
+                        2], 
                         ["Question 8", 
                         "The Javascript language has many built-in ______ which are used on objects to execute specific tasks", 
                             ["Cheerleaders",
                             "Mechanics",
                             "Methods",
                             "Scaffolds"],
-                        2], 
+                        3], 
                         ["Question 9", 
                         "In Javascript, the keyword used to specify a particular instance of an object is...", 
                             ["Guy",
                             "Johnny 5",
                             "This",
                             "That"],
-                        0], 
+                        3], 
                         ["Question 10", 
                         "Objectively, the best computer system is...", 
                             ["Linux",
                             "Windows",
                             "Mac",
                             "One which is used to code"],
-                        3]
+                        4]
                     ];
 let quizTime = 0;
 let currentQuestion = 0;
+let score = 0;
+var interval;
 $startButton.addEventListener("click", quiz);
-
-
-
-
 
 function loadStartScreen(){
     switchScreen('start');
@@ -128,13 +126,13 @@ function quiz(event){
     switchScreen('quiz');
     quizTime = 75;
     quizTimer();
-    let score = 0;
     let correctAnswer = 0;
     displayQuestion(currentQuestion);
 
     //function to update the quiz screen as new questions are needed
     function displayQuestion(questionNumber){
     //decrement number used to access array indexes
+    console.log(currentQuestion);
         correctAnswer = quizQuestions[questionNumber][3];
         $quizTitle.innerHTML = quizQuestions[questionNumber][0];
         $quizText.innerHTML = quizQuestions[questionNumber][1];
@@ -146,15 +144,26 @@ function quiz(event){
 
     }
 
+    //function which accepts a click event and determines if the answer chosen is correct. It will either trigger the next question to display or will go to the quiz finished screen
+
     function answerChosen(event){
         let answer = event.target.getAttribute("name");
+        console.log(answer, correctAnswer);
+
         currentQuestion++;
-        if (answer === correctAnswer){
+        if (currentQuestion > 9){
+            quizFinishedScreen(score);
+        }
+        //chose the correct answer
+        else if (answer == correctAnswer){
             score += 1047;
             displayCorrectAlert();
             displayQuestion(currentQuestion);            
         }
+        //chose the incorrect answer
         else{
+            quizTime -= 10;
+            updateTimerDisplay();
             displayIncorrectAlert();
             displayQuestion(currentQuestion);            
         }
@@ -172,12 +181,10 @@ function quiz(event){
 
 }
 
-
-
-
-
 function quizFinishedScreen(score){
+    clearInterval(interval)
     switchScreen('quizFinished');
+    alert(score);
 
 }
 
@@ -191,10 +198,10 @@ function clearHighscores() {
 }
 
 function quizTimer(){
-    let interval = setInterval(function(){
+    interval = setInterval(function(){
         updateTimerDisplay();
         if (quizTime < 1){
-            clearInterval(interval);
+            quizFinishedScreen(score);
         }
         quizTime--;
     }, 1000);
