@@ -112,7 +112,6 @@ const quizQuestions = [
 let quizTime = 0;
 let currentQuestion = 0;
 $startButton.addEventListener("click", quiz);
-$answerBlock.addEventListener("click", answerChosen);
 
 
 
@@ -124,40 +123,58 @@ function loadStartScreen(){
 }
 
 function quiz(event){
+    $answerBlock.addEventListener("click", answerChosen);
+
     switchScreen('quiz');
     quizTime = 75;
     quizTimer();
     let score = 0;
-    let correct = displayQuestion(0);
+    let correctAnswer = 0;
+    displayQuestion(currentQuestion);
 
-    //quizFinishedScreen(score);
-}
-
-//function to update the quiz screen as new questions are needed
-function displayQuestion(questionNumber){
+    //function to update the quiz screen as new questions are needed
+    function displayQuestion(questionNumber){
     //decrement number used to access array indexes
-    let correctAnswer = quizQuestions[questionNumber][3];
-    $quizTitle.innerHTML = quizQuestions[questionNumber][0];
-    $quizText.innerHTML = quizQuestions[questionNumber][1];
-    $answer1.innerHTML =  quizQuestions[questionNumber][2][0];
-    $answer2.innerHTML = quizQuestions[questionNumber][2][1];
-    $answer3.innerHTML = quizQuestions[questionNumber][2][2];
-    $answer4.innerHTML = quizQuestions[questionNumber][2][3];
+        correctAnswer = quizQuestions[questionNumber][3];
+        $quizTitle.innerHTML = quizQuestions[questionNumber][0];
+        $quizText.innerHTML = quizQuestions[questionNumber][1];
+        $answer1.innerHTML =  quizQuestions[questionNumber][2][0];
+        $answer2.innerHTML = quizQuestions[questionNumber][2][1];
+        $answer3.innerHTML = quizQuestions[questionNumber][2][2];
+        $answer4.innerHTML = quizQuestions[questionNumber][2][3];
+        
 
-}
+    }
 
-function answerChosen(event){
-    console.log(event.target);
-
-}
-
-function displayCorrectAlert(){
+    function answerChosen(event){
+        let answer = event.target.getAttribute("name");
+        currentQuestion++;
+        if (answer === correctAnswer){
+            score += 1047;
+            displayCorrectAlert();
+            displayQuestion(currentQuestion);            
+        }
+        else{
+            displayIncorrectAlert();
+            displayQuestion(currentQuestion);            
+        }
+    }
     
+    function displayCorrectAlert(){
+        
+    }
+    
+    function displayIncorrectAlert(){
+    
+    }
+
+
+
 }
 
-function displayIncorrectAlert(){
 
-}
+
+
 
 function quizFinishedScreen(score){
     switchScreen('quizFinished');
