@@ -29,6 +29,9 @@ const $startButton = document.querySelector('#startButton');
 const $quizTitle = document.querySelector('#quizTitle');
 const $quizText = document.querySelector('#quizText');
 const $answerBlock = document.querySelector('#answerBlock');
+const $finalScore = document.querySelector('#finishedScore');
+const $initialsBox = document.querySelector('#initials');
+const $submitBtn = document.querySelector('#submitButton');
 const $answer1 = document.querySelector('#answer1');
 const $answer2 = document.querySelector('#answer2');
 const $answer3 = document.querySelector('#answer3');
@@ -114,6 +117,7 @@ let currentQuestion = 0;
 let score = 0;
 var interval;
 $startButton.addEventListener("click", quiz);
+$submitBtn.addEventListener("click", submitScore);
 
 function loadStartScreen(){
     switchScreen('start');
@@ -170,6 +174,7 @@ function quiz(event){
     }
     
     function displayCorrectAlert(){
+
         
     }
     
@@ -182,9 +187,17 @@ function quiz(event){
 }
 
 function quizFinishedScreen(score){
-    clearInterval(interval)
+    clearInterval(interval);
     switchScreen('quizFinished');
-    alert(score);
+    $finalScore.textContent = score;
+
+
+}
+
+function submitScore(event){
+    event.preventDefault();
+    let initials = $initialsBox.value;
+    console.log(initials);
 
 }
 

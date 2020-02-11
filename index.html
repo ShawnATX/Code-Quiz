@@ -73,8 +73,19 @@ Highscores - list of saved highscores, a clear highscores button, and a go back 
             <div class="card" style="width: 48rem;">
                 <div class="card-body">
                     <h3 class="card-title">Quiz Finished!</h3>
+                    <form class="form">
+                        <div class="row">
+                            <p class="card-text col-12">
+                                Your score is: <span id="finishedScore"></span>
+                            </p>
+                        </div>
 
-                    <a href="#" class="btn btn-primary" id="startButton">Submit</a>
+                        <div class="form-group row mx-sm-3 mb-2">
+                          <label for="initials" class="col-form-label col-s-2 mr-2">Enter Your Initials</label>
+                          <input class="form-control col-s-4" id="initials">
+                        </div>
+                        <button class="btn btn-primary mb-2" id="submitButton">Submit</button>
+                      </form>
 
                 </div>
             </div>
@@ -85,9 +96,7 @@ Highscores - list of saved highscores, a clear highscores button, and a go back 
             <div class="card" style="width: 48rem;">
                 <div class="card-body">
                     <h3 class="card-title">Highscores</h3>
-                    <p class="card-text" id="cardText">
-                        Try to answer the following questions within the time limit that has been set. Each wrong answer will reduce your total remaining time. Good luck!
-                    </p>
+                    
                     <a href="#" class="btn btn-primary" id="restartButton">Restart</a>
 
                 </div>
