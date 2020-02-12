@@ -20,6 +20,7 @@ quiz screen - #, question, 4 clickable answers, content to display correct or in
 
 //grab needed HTML elements
 const $highscoresLink = document.querySelector('#highscores');
+const $time = document.querySelector('#time');
 const $timer = document.querySelector('#timeCounter');
 const $startContent = document.querySelector('#startContent');
 const $quizContent = document.querySelector('#quizContent');
@@ -38,6 +39,11 @@ const $answer3 = document.querySelector('#answer3');
 const $answer4 = document.querySelector('#answer4');
 
 
+//needed global event listeners
+$startButton.addEventListener("click", quiz);
+$submitBtn.addEventListener("click", submitScore);
+$highscoresLink.addEventListener("click", highscoresScreen);
+
 
 //quizQuestions array contains 10 elements, each is a question array with 4 elements (title, question, answers, index of correct answer), each answer is an array with 4 elements
 const quizQuestions = [
@@ -53,7 +59,7 @@ const quizQuestions = [
                             ["Jimmy Should Obviously Not",
                             "Jamiroquai Shall Obtain Nobility",
                             "Javascript Object Notation",
-                            "John-Jacob-Jingleheimer Schmidt Only Name"],
+                            "John-Jacob-Jingleheimer Schmidt, Only Name"],
                         3], 
                         ["Question 3", 
                         "The core languages of the web are...", 
@@ -70,7 +76,7 @@ const quizQuestions = [
                             "Recursive"],
                         4], 
                         ["Question 5", 
-                        "A language-agnostic disambiguation of a program or function is known as...", 
+                        "A language-agnostic description of a program or function is known as...", 
                             ["Jibber Jabber",
                             "Pseudo-code",
                             "Mumbo Jumbo",
@@ -87,7 +93,7 @@ const quizQuestions = [
                         "Version Control systems ARE NOT used for", 
                             ["Managing collaborative work with multiple team members",
                             "Ensuring you have the correct version of your browser",
-                            "Tracking changes iteratively as a program is build",
+                            "Tracking changes iteratively as a program is built",
                             "Housing a decentralized repository of a program"],
                         2], 
                         ["Question 8", 
@@ -116,17 +122,25 @@ let quizTime = 0;
 let currentQuestion = 0;
 let score = 0;
 var interval;
-$startButton.addEventListener("click", quiz);
-$submitBtn.addEventListener("click", submitScore);
+let highscores = {Scores: [] };
+
 
 function loadStartScreen(){
     switchScreen('start');
     $timer.textContent = quizTime;
 }
 
+function getHighScores(){
+    console.log(highscores);
+    let savedScores = JSON.parse(localStorage.getItem("highscores"));
+    if (savedScores === null){
+        return;
+    }
+    highscores = savedScores;
+}
+
 function quiz(event){
     $answerBlock.addEventListener("click", answerChosen);
-
     switchScreen('quiz');
     quizTime = 75;
     quizTimer();
@@ -136,7 +150,6 @@ function quiz(event){
     //function to update the quiz screen as new questions are needed
     function displayQuestion(questionNumber){
     //decrement number used to access array indexes
-    console.log(currentQuestion);
         correctAnswer = quizQuestions[questionNumber][3];
         $quizTitle.innerHTML = quizQuestions[questionNumber][0];
         $quizText.innerHTML = quizQuestions[questionNumber][1];
@@ -144,16 +157,11 @@ function quiz(event){
         $answer2.innerHTML = quizQuestions[questionNumber][2][1];
         $answer3.innerHTML = quizQuestions[questionNumber][2][2];
         $answer4.innerHTML = quizQuestions[questionNumber][2][3];
-        
-
     }
 
     //function which accepts a click event and determines if the answer chosen is correct. It will either trigger the next question to display or will go to the quiz finished screen
-
     function answerChosen(event){
         let answer = event.target.getAttribute("name");
-        console.log(answer, correctAnswer);
-
         currentQuestion++;
         if (currentQuestion > 9){
             quizFinishedScreen(score);
@@ -174,35 +182,49 @@ function quiz(event){
     }
     
     function displayCorrectAlert(){
-
-        
+  
     }
     
     function displayIncorrectAlert(){
     
     }
-
-
-
 }
 
 function quizFinishedScreen(score){
     clearInterval(interval);
     switchScreen('quizFinished');
     $finalScore.textContent = score;
-
-
+    console.log("quiz finished");
 }
 
 function submitScore(event){
     event.preventDefault();
-    let initials = $initialsBox.value;
-    console.log(initials);
-
+    let initials = $initialsBox.value.trim();
+    let scoreObj = { 
+        Initials: initials,
+        Score: score
+    };
+    console.log(highscores);
+    highscores.Scores.push(scoreObj);
+    console.log(highscores);
+    localStorage.setItem("highscores", JSON.stringify(highscores));
+    quizTime = 0;
+    highscoresScreen();
 }
 
 function highscoresScreen(){
+    //prevent exiting the quiz while time is ticking. This may break the operation of the quiz function
+    if (quizTime != 0){
+        return;
+    }
     switchScreen('highscores');
+    console.log("high scores screen loaded");
+    $highscoresLink.style.display = "none";
+    $time.style.display = "none";
+
+
+
+
 
 }
 
@@ -265,3 +287,4 @@ function switchScreen(screenToDisplay)
 
 //initialize the quiz site
 loadStartScreen();
+getHighScores();
