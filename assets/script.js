@@ -143,6 +143,7 @@ function loadStartScreen(){
 }
 
 function quiz(event){
+    console.log(score);
     $answerBlock.addEventListener("click", answerChosen);
     switchScreen('quiz');
     quizTime = 75;
@@ -176,7 +177,8 @@ function quiz(event){
         }
         currentQuestion++;
         if (currentQuestion > 9){
-            quizFinishedScreen(score);
+            $answerBlock.removeEventListener("click", answerChosen);
+            quizFinishedScreen();
         }
         else {
             displayQuestion(currentQuestion);            
@@ -192,7 +194,7 @@ function quiz(event){
     }
 }
 
-function quizFinishedScreen(score){
+function quizFinishedScreen(){
     clearInterval(interval);
     switchScreen('quizFinished');
     $finalScore.textContent = score;
@@ -201,6 +203,7 @@ function quizFinishedScreen(score){
 function submitScore(event){
     event.preventDefault();
     let initials = $initialsBox.value.trim();
+    $initialsBox.value = "";
     let scoreObj = { 
         Initials: initials,
         Score: score
@@ -216,6 +219,8 @@ function highscoresScreen(){
     if (quizTime != 0){
         return;
     }
+    //reset screen for repeated playthroughs
+    $highscoreList.innerHTML= "";
     switchScreen('highscores');
     $highscoresLink.style.display = "none";
     $time.style.display = "none";
@@ -238,6 +243,8 @@ function clearHighscores() {
 function startQuizAgain (){
     $highscoresLink.style.display = "inline";
     $time.style.display = "inline";
+    currentQuestion = 0;
+    score = 0;
     loadStartScreen();
 
 }
@@ -246,7 +253,7 @@ function quizTimer(){
     interval = setInterval(function(){
         updateTimerDisplay();
         if (quizTime < 1){
-            quizFinishedScreen(score);
+            quizFinishedScreen();
         }
         quizTime--;
     }, 1000);
