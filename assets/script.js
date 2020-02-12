@@ -26,6 +26,9 @@ const $startContent = document.querySelector('#startContent');
 const $quizContent = document.querySelector('#quizContent');
 const $quizFinishedContent = document.querySelector('#quizFinishedContent');
 const $highscoresContent = document.querySelector('#highscoresContent');
+const $highscoreList = document.querySelector('#highscoreList');
+const $clearHighscores = document.querySelector('#clearButton');
+const $restartQuiz = document.querySelector('#restartButton');
 const $startButton = document.querySelector('#startButton');
 const $quizTitle = document.querySelector('#quizTitle');
 const $quizText = document.querySelector('#quizText');
@@ -43,6 +46,8 @@ const $answer4 = document.querySelector('#answer4');
 $startButton.addEventListener("click", quiz);
 $submitBtn.addEventListener("click", submitScore);
 $highscoresLink.addEventListener("click", highscoresScreen);
+$clearHighscores.addEventListener("click", clearHighscores);
+$restartQuiz.addEventListener("click", startQuizAgain);
 
 
 //quizQuestions array contains 10 elements, each is a question array with 4 elements (title, question, answers, index of correct answer), each answer is an array with 4 elements
@@ -124,19 +129,17 @@ let score = 0;
 var interval;
 let highscores = {Scores: [] };
 
-
-function loadStartScreen(){
-    switchScreen('start');
-    $timer.textContent = quizTime;
-}
-
 function getHighScores(){
-    console.log(highscores);
     let savedScores = JSON.parse(localStorage.getItem("highscores"));
     if (savedScores === null){
         return;
     }
     highscores = savedScores;
+}
+
+function loadStartScreen(){
+    switchScreen('start');
+    $timer.textContent = quizTime;
 }
 
 function quiz(event){
@@ -162,21 +165,20 @@ function quiz(event){
     //function which accepts a click event and determines if the answer chosen is correct. It will either trigger the next question to display or will go to the quiz finished screen
     function answerChosen(event){
         let answer = event.target.getAttribute("name");
-        currentQuestion++;
-        if (currentQuestion > 9){
-            quizFinishedScreen(score);
-        }
-        //chose the correct answer
-        else if (answer == correctAnswer){
+        if (answer == correctAnswer){
             score += 1047;
             displayCorrectAlert();
-            displayQuestion(currentQuestion);            
         }
-        //chose the incorrect answer
         else{
             quizTime -= 10;
             updateTimerDisplay();
             displayIncorrectAlert();
+        }
+        currentQuestion++;
+        if (currentQuestion > 9){
+            quizFinishedScreen(score);
+        }
+        else {
             displayQuestion(currentQuestion);            
         }
     }
@@ -194,7 +196,6 @@ function quizFinishedScreen(score){
     clearInterval(interval);
     switchScreen('quizFinished');
     $finalScore.textContent = score;
-    console.log("quiz finished");
 }
 
 function submitScore(event){
@@ -204,9 +205,7 @@ function submitScore(event){
         Initials: initials,
         Score: score
     };
-    console.log(highscores);
     highscores.Scores.push(scoreObj);
-    console.log(highscores);
     localStorage.setItem("highscores", JSON.stringify(highscores));
     quizTime = 0;
     highscoresScreen();
@@ -218,17 +217,28 @@ function highscoresScreen(){
         return;
     }
     switchScreen('highscores');
-    console.log("high scores screen loaded");
     $highscoresLink.style.display = "none";
     $time.style.display = "none";
-
-
-
-
-
+    let highscoresToList = highscores.Scores;
+    highscoresToList.forEach(function(hs){
+        let nextScore = document.createElement("li");
+        nextScore.setAttribute("class", "list-group-item");
+        nextScore.innerHTML = hs.Initials + " : " + hs.Score;
+        $highscoreList.appendChild(nextScore);
+    })
 }
 
 function clearHighscores() {
+    localStorage.removeItem("highscores");
+    highscores = {Scores: [] };
+    $highscoreList.innerHTML= "";
+
+}
+
+function startQuizAgain (){
+    $highscoresLink.style.display = "inline";
+    $time.style.display = "inline";
+    loadStartScreen();
 
 }
 
@@ -285,6 +295,6 @@ function switchScreen(screenToDisplay)
 }
 
 
-//initialize the quiz site
+//initialize the quiz page
 loadStartScreen();
 getHighScores();
