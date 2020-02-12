@@ -1,0 +1,16 @@
+.subtle-alert{
+    visibility: visible !important;
+    -webkit-opacity: 0.90;
+    -moz-opacity: 0.90;
+    opacity: 0.90;
+}
+
+
+.alert{
+    visibility: hidden;
+    display: none;
+    -webkit-transition: opacity 3s ease-in-out;
+    -moz-transition: opacity 3s ease-in-out;
+    -ms-transition: opacity 3s ease-in-out;
+    -o-transition: opacity 3s ease-in-out;
+}

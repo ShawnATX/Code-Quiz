@@ -24,6 +24,8 @@ const $time = document.querySelector('#time');
 const $timer = document.querySelector('#timeCounter');
 const $startContent = document.querySelector('#startContent');
 const $quizContent = document.querySelector('#quizContent');
+const $correctAlert = document.querySelector('#correct');
+const $incorrectAlert = document.querySelector('#incorrect');
 const $quizFinishedContent = document.querySelector('#quizFinishedContent');
 const $highscoresContent = document.querySelector('#highscoresContent');
 const $highscoreList = document.querySelector('#highscoreList');
@@ -143,7 +145,6 @@ function loadStartScreen(){
 }
 
 function quiz(event){
-    console.log(score);
     $answerBlock.addEventListener("click", answerChosen);
     switchScreen('quiz');
     quizTime = 75;
@@ -186,10 +187,21 @@ function quiz(event){
     }
     
     function displayCorrectAlert(){
-  
+        $correctAlert.style.display = "block"
+        $correctAlert.classList.add("subtle-alert");
+        let alertTimer = setTimeout(function(){               
+            $correctAlert.classList.remove("subtle-alert");
+            $correctAlert.style.display = "none";
+        }, 1500);
     }
     
     function displayIncorrectAlert(){
+        $incorrectAlert.style.display = "block"
+        $incorrectAlert.classList.add("subtle-alert");
+        let alertTimer = setTimeout(function(){               
+            $incorrectAlert.classList.remove("subtle-alert");
+            $incorrectAlert.style.display = "none";            
+        }, 1500);
     
     }
 }
@@ -215,7 +227,7 @@ function submitScore(event){
 }
 
 function highscoresScreen(){
-    //prevent exiting the quiz while time is ticking. This may break the operation of the quiz function
+    //prevent exiting the quiz while time is ticking.
     if (quizTime != 0){
         return;
     }
@@ -237,7 +249,6 @@ function clearHighscores() {
     localStorage.removeItem("highscores");
     highscores = {Scores: [] };
     $highscoreList.innerHTML= "";
-
 }
 
 function startQuizAgain (){
@@ -246,7 +257,6 @@ function startQuizAgain (){
     currentQuestion = 0;
     score = 0;
     loadStartScreen();
-
 }
 
 function quizTimer(){
@@ -257,7 +267,6 @@ function quizTimer(){
         }
         quizTime--;
     }, 1000);
-
 }
 
 function updateTimerDisplay(){
@@ -298,9 +307,7 @@ function switchScreen(screenToDisplay)
             $highscoresContent.style.display = "none";
             break;
     }
-
 }
-
 
 //initialize the quiz page
 loadStartScreen();
